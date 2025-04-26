@@ -1,0 +1,27 @@
+FROM bitnami/spark:latest
+
+# Install system dependencies and upgrade pip in a single layer
+RUN python -m pip install --upgrade pip
+
+# Install Python dependencies
+RUN pip install \
+    kafka-python \
+    psycopg2-binary \
+    numpy \
+    pandas \
+    xgboost \
+    tensorflow-cpu \
+    scikit-learn \
+    plotly \
+    torch \
+    py4j \
+    prefect \
+    mlflow \
+    river \
+    hyperopt \
+    minio \
+    
+
+
+# Set the working directory
+WORKDIR /app

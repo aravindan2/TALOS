@@ -1,0 +1,105 @@
+services:
+  ed-zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: ed-zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - mynetwork
+
+  ed-kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: ed-kafka
+    depends_on:
+      - ed-zookeeper
+    ports:
+      - "9092:9092"
+    networks:
+      - mynetwork
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: ed-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://ed-kafka:29092,PLAINTEXT_HOST://127.0.0.1:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - ./kafka-init.sh:/kafka-init.sh
+    entrypoint: ["/bin/sh", "-c", "/kafka-init.sh & /etc/confluent/docker/run"]
+
+
+  spark:
+    build: ./spark
+    container_name: spark
+    environment:
+      SPARK_MODE: master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    networks:
+      - mynetwork
+    volumes:
+      - ./app:/app
+      - ./shared-models:/app/shared  # ✅ Shared model volume
+    # command: ["python","spark_job.py"]
+
+  dashboard:
+    build: ./dashboard
+    container_name: dashboard
+    depends_on:
+      - spark
+    volumes:
+      - ./app:/app
+      - ./shared-models:/app/shared  # ✅ Access the same shared model volume
+    working_dir: /app/shared
+    command: ["streamlit", "run", "dashboard.py", "--server.port=8501"]
+    ports:
+      - "8501:8501"
+    networks:
+      - mynetwork
+
+  Prefect:
+    image: prefecthq/prefect:3-latest 
+    container_name: Prefect
+    volumes:
+    - ./shared-models:/app/shared
+    working_dir: /app
+    ports:
+      - "4200:4200"
+    command: [ "prefect", "server" ,"start","--host","0.0.0.0"]
+    networks:
+      - mynetwork
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest  
+    container_name: mlflow
+    ports:
+      - "5000:5000"  
+    environment:
+      - MLFLOW_HOME=/app
+    volumes:
+      - ./shared-models:/app/shared  
+    networks:
+      - mynetwork
+    command: ["mlflow", "server", "--host", "0.0.0.0"]
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+    container_name: minio
+    networks:
+      - mynetwork
+
+volumes:
+  shared-models: 
+networks:
+  mynetwork:
