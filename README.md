@@ -1,9 +1,14 @@
-## Framework Overview
+# Framework Overview
 This framework provides an integrated solution for data ingestion, processing, and analytics through a suite of containerized components orchestrated via Docker.
 
-## Core Components
+[Core Components](#core-components)
 
-### Minio
+[System Architecture](#system-architecture)
+
+[Steps to Follow](#steps-to-follow)
+
+# Core Components
+## Minio ![Amazon S3](https://img.shields.io/badge/Amazon%20S3-FF9900?style=for-the-badge&logo=amazons3&logoColor=white)
 - **Type**: Object Storage
 - **Description**: Self-hosted alternative to AWS S3 with similar capabilities
 - **Features**:
@@ -11,7 +16,7 @@ This framework provides an integrated solution for data ingestion, processing, a
   - Data versioning and lifecycle management
   - Access control and encryption
 
-### Kafka
+## Kafka ![Apache Kafka](https://img.shields.io/badge/Apache%20Kafka-000?style=for-the-badge&logo=apachekafka)
 - **Type**: Distributed Event Streaming Platform
 - **Functionality**:
   - Acts as a high-throughput message queue
@@ -21,7 +26,7 @@ This framework provides an integrated solution for data ingestion, processing, a
   - Supports multiple brokers for load distribution
   - Horizontal scaling capabilities
 
-### Spark
+## Spark ![Apache Spark](https://img.shields.io/badge/Apache%20Spark-FDEE21?style=flat-square&logo=apachespark&logoColor=black)
 - **Type**: Batch Processing Engine
 - **Primary Use**: ETL (Extract, Transform, Load) workloads
 - **Capabilities**:
@@ -29,7 +34,7 @@ This framework provides an integrated solution for data ingestion, processing, a
   - Large-scale data processing
   - Integration with multiple data sources
 
-### MLflow
+## MLflow ![mlflow](https://img.shields.io/badge/mlflow-%23d9ead3.svg?style=for-the-badge&logo=numpy&logoColor=blue)
 - **Type**: Machine Learning Lifecycle Platform
 - **Features**:
   - Experiment tracking
@@ -37,16 +42,17 @@ This framework provides an integrated solution for data ingestion, processing, a
   - Model registry
 - **Deployment**: Hosted locally within the framework
 
-### Streamlit
+## Streamlit ![Streamlit](https://img.shields.io/badge/Streamlit-%23FE4B4B.svg?style=for-the-badge&logo=streamlit&logoColor=white)
 - **Type**: Analytics Frontend
 - **Advantages**:
   - Rapid dashboard development
   - Interactive data visualization
   - Python-native development
 
-## System Architecture
+# System Architecture
 
-### Container Orchestration
+## Container Orchestration 
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 - **Docker Compose**:
   - Manages multi-container deployments
   - Single-command startup/shutdown
