@@ -19,7 +19,6 @@ RUN pip install \
     mlflow \
     river \
     hyperopt \
-    minio \
     
 
 
